@@ -23,4 +23,8 @@ extension NoctalColor {
         
         return SwiftUI.Color(red: r, green: g, blue: b, opacity: a)
     }
+    
+    static func DEBUG_placeholder() -> SwiftUI.Color {
+        return NoctalColor(rgb: "#4CFF0000").toPlatform()
+    }
 }

@@ -9,19 +9,30 @@
 import Foundation
 import SwiftUI
 
-struct StoryView: View {
+struct StoriesView: View {
     var body: some View {
-        Text("Story Page")
+        List {
+            ForEach((1...10), id: \.self) { it in
+                VStack(spacing: 0) {
+                    StoryCell()
+                    
+                    Rectangle()
+                        .frame(height: 1)
+                        .background(Color(UIColor.opaqueSeparator))
+                }.listRowSeparator(.hidden)
+                    .listRowInsets(EdgeInsets())
+            }
+        }.listStyle(.plain)
     }
 }
 
 
-struct StoryView_Previews: PreviewProvider {
+struct StoriesView_Previews: PreviewProvider {
     static var previews: some View {
         ModifiedContent(
-            content: StoryView(),
+            content: StoriesView(),
             modifier: WithThemes()
-//            modifier: AllPreviewDevices(deviceTypes: [.iPhone, .iPad]))
+            //            modifier: AllPreviewDevices(deviceTypes: [.iPhone, .iPad]))
         )
     }
 }

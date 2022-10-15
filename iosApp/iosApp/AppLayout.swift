@@ -6,7 +6,7 @@ struct AppLayout: View {
     
     var body: some View {
         TabView {
-            StoryView()
+            StoriesView()
                 .tabItem({Label(NavRoute.Stories.shared.displayName, systemImage: "plus")})
             SearchView()
                 .tabItem({Label(NavRoute.Search.shared.displayName, systemImage: "plus")})

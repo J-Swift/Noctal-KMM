@@ -10,4 +10,8 @@ fun NoctalColor.toPlatform(): Color {
     return Color(this.argbLongValue)
 }
 
+fun NoctalColor.Companion.DEBUG_placeholder(): Color {
+    return NoctalColor("#4CFF0000").toPlatform()
+}
+
 val LocalNoctalTheme = staticCompositionLocalOf<ITheme> { LightTheme() }

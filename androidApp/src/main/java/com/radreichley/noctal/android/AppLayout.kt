@@ -84,7 +84,7 @@ private fun RowScope.NavItem(route: NavRoute, currentRoute: String, onClick: () 
 
 @Preview(showSystemUi = true)
 @Composable
-fun MainScene_Preview(
+fun AppLayout_Preview(
     @PreviewParameter(PreviewThemeProvider::class) useDarkTheme: Boolean
 ) {
     val theme = if (useDarkTheme) DarkTheme() else LightTheme()
