@@ -1,10 +1,10 @@
 package com.radreichley.noctal.base.theming
 
 class Color {
-    private var colorVal: ULong = 0x00000000u
+    private var argbColorVal: ULong = 0x00000000u
 
-    val longValue: Long
-        get() = colorVal.toLong()
+    val argbLongValue: Long
+        get() = argbColorVal.toLong()
 
     companion object {
         private val regex = Regex(
@@ -21,11 +21,6 @@ class Color {
         val alpha = if (converted.count() == 4) converted.removeFirst() else 0xFFu
 
         initialize(converted[0], converted[1], converted[2], alpha)
-
-//        val converted = matches.groupValues.map { it.toInt(16) }.toMutableList()
-//        val alpha = if (converted.count() == 4) converted.removeFirst().toInt() else 0xFF
-//
-//        initialize(converted[0].toUByte(), converted[1].toUByte(), converted[2].toUByte(), alpha.toUByte())
     }
 
     constructor(red: UByte, green: UByte, blue: UByte, alpha: UByte = 0xFFu) {
@@ -41,7 +36,7 @@ class Color {
         val g2 = green.toLong().shl(18).toString(16)
         val b1 = blue.toString(16)
         val b2 = blue.toLong().toString(16)
-        colorVal = (alpha.toULong().shl(24) or
+        argbColorVal = (alpha.toULong().shl(24) or
                 red.toULong().shl(16) or
                 green.toULong().shl(8) or
                 blue.toULong())

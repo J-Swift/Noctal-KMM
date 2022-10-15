@@ -1,17 +1,14 @@
+//
+//  PreviewHelpers.swift
+//  iosApp
+//
+//  Created by James Reichley on 10/14/22.
+//  Copyright © 2022 orgName. All rights reserved.
+//
+
+import Foundation
 import SwiftUI
 import shared
-
-struct ContentView: View {
-    @Environment(\.noctalTheme) var noctalTheme
-    
-    var body: some View {
-        ZStack {
-            noctalTheme.surfaceColor.toPlatform()
-            Text("Hi")
-                .foregroundColor(noctalTheme.onSurfaceColor.toPlatform())
-        }
-    }
-}
 
 struct WithThemes: ViewModifier {
     @Environment(\.colorScheme) var scheme
@@ -20,18 +17,6 @@ struct WithThemes: ViewModifier {
             .environment(\.noctalTheme, scheme == .light ? LightTheme() : DarkTheme())
     }
 }
-
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        ModifiedContent(
-            content: ContentView(),
-            modifier: WithThemes()
-//            modifier: AllPreviewDevices(deviceTypes: [.iPhone, .iPad]))
-        )
-    }
-}
-
-
 
 public struct AllPreviewDevices: ViewModifier {
     

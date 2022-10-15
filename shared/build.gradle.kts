@@ -48,10 +48,10 @@ kotlin {
 
 android {
     namespace = "com.radreichley.noctal"
-    compileSdk = 32
+    compileSdk = 33
     defaultConfig {
         minSdk = 26
-        targetSdk = 32
+        targetSdk = 33
     }
 }
 dependencies {
