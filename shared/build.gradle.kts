@@ -5,7 +5,7 @@ plugins {
 
 kotlin {
     android()
-    
+
     listOf(
         iosX64(),
         iosArm64(),
@@ -17,7 +17,18 @@ kotlin {
     }
 
     sourceSets {
-        val commonMain by getting
+        val commonMain by getting {
+            dependencies {
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core")
+                {
+                    version {
+                        strictly("1.6.3-native-mt")
+                    }
+                }
+                implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.4.0")
+                implementation("com.chrynan.uri:uri-core:0.4.0")
+            }
+        }
         val commonTest by getting {
             dependencies {
                 implementation(kotlin("test"))

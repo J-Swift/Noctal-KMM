@@ -10,6 +10,7 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        maven { url = java.net.URI("https://repo.repsy.io/mvn/chrynan/public") }
     }
 }
 

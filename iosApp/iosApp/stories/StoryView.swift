@@ -8,24 +8,46 @@
 
 import Foundation
 import SwiftUI
+import shared
 
 struct StoriesView: View {
+    @Environment(\.noctalTheme) var noctalTheme
+    
+    @State var stories = [Story]()
+    
     var body: some View {
-        List {
-            ForEach((1...10), id: \.self) { it in
-                VStack(spacing: 0) {
-                    StoryCell()
-                    
-                    Rectangle()
-                        .frame(height: 1)
-                        .background(Color(UIColor.opaqueSeparator))
+        NavigationView {
+            List {
+                ForEach(stories, id: \.id) { it in
+                    ZStack {
+                        VStack(spacing: 0) {
+                            StoryCell(story: it)
+                            
+                            Divider()
+                        }
+                        
+                        NavigationLink(destination: Text(it.title)) {
+                            EmptyView()
+                        }.frame(width: 0).opacity(0)
+                    }
                 }.listRowSeparator(.hidden)
                     .listRowInsets(EdgeInsets())
-            }
-        }.listStyle(.plain)
+            }.listStyle(.plain)
+                .task {
+                    stories = HNApiMock.companion.stories
+//                    stories = await withCheckedContinuation({(context: CheckedContinuation<[Story], Never>) in
+//                        HNApiMock().getStoriesAsync { stories, err in
+////                            if let err = err {
+////                                context.resume(with: .failure())
+////                            } else {
+//                                context.resume(with: .success(stories ?? []))
+////                            }
+//                        }
+//                    })
+                }
+        }
     }
 }
-
 
 struct StoriesView_Previews: PreviewProvider {
     static var previews: some View {

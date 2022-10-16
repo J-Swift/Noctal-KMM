@@ -14,6 +14,7 @@ object StoryCellConfig {
 
     object Styling {
         const val FontSizeDefault = 19.0
-        const val FontSizeTitle = 21.0
+        const val FontSizeTitle = 24.0
+        const val FontSizePlaceholder = 32.0
     }
 }

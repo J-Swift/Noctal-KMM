@@ -15,54 +15,82 @@ fileprivate let dims = StoryCellConfig.Dims.shared
 fileprivate let styles = StoryCellConfig.Styling.shared
 
 struct StoryCell: View {
+    @Environment(\.noctalTheme) var noctalTheme
+    
+    var story: Story
+    
     var body: some View {
-            HStack(spacing: 0) {
+        HStack(spacing: 0) {
+            
+            ZStack {
                 RoundedRectangle(cornerRadius: dims.DimImgRadius)
                     .frame(width: dims.DimImg, height: dims.DimImg)
                     .padding(.horizontal, dims.DimHPadding)
                     .foregroundColor(debugColor)
                 
-                VStack(alignment: .leading, spacing: dims.DimVPadding) {
-                    StoryLabel("1.")
-                    StoryLabel("This is the titlez", styles.FontSizeTitle)
-                    StoryLabel("JamesSwift")
-                    StoryLabel("311")
-                }.frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(EdgeInsets(top: dims.DimVPadding, leading: 0, bottom: dims.DimVPadding, trailing: dims.DimHPadding))
-                    .layoutPriority(1)
-                    
+                Text(story.placeholderLetter ?? "Y")
+                    .foregroundColor(Color.white)
+                    .font(.system(size: styles.FontSizePlaceholder))
             }
+            
+            VStack(alignment: .leading, spacing: dims.DimVPadding) {
+                HStack(spacing: dims.DimHPaddingRow) {
+                    StoryLabel(text: "1.")
+                    RoundedRectangle(cornerRadius: dims.DimImgFavicon/2.0)
+                        .frame(width: dims.DimImgFavicon, height: dims.DimImgFavicon)
+                        .foregroundColor(debugColor)
+                    StoryLabel(text: story.displayUrl ?? " ", textColor: noctalTheme.primaryColor.toPlatform())
+                        .minimumScaleFactor(0.2)
+                }
+                
+                StoryLabel(text: story.title, fontSize: styles.FontSizeTitle, lineLimit: nil)
+                
+                HStack(spacing: dims.DimHPaddingRow) {
+                    StoryLabel(text: story.author)
+                    StoryLabel(text: "•")
+                    StoryLabel(text: "4h ago")
+                }
+                
+                HStack(spacing: dims.DimHPaddingRow) {
+                    StoryLabel(text: "↑")
+                    StoryLabel(text: String(story.score))
+                    StoryLabel(text: "•")
+                    StoryLabel(text: "\(story.numComments) comments")
+                }
+            }.frame(maxWidth: .infinity, alignment: .leading)
+                .padding(EdgeInsets(top: dims.DimVPadding, leading: 0, bottom: dims.DimVPadding, trailing: dims.DimHPadding))
+                .layoutPriority(1)
+            
+        }.background(noctalTheme.backgroundColor.toPlatform())
     }
 }
 
 fileprivate struct StoryLabel: View {
     @Environment(\.noctalTheme) var noctalTheme
     
-    private let text: String
-    private let fontSize: Double
-    
-    init(_ text: String, _ fontSize: Double = styles.FontSizeDefault) {
-        self.text = text
-        self.fontSize = fontSize
-    }
+    var text: String
+    var textColor: SwiftUI.Color?
+    var fontSize = styles.FontSizeDefault
+    var lineLimit: Int? = 1
     
     var body: some View {
         Text(text)
-            .foregroundColor(noctalTheme.onBackgroundColor.toPlatform())
+            .foregroundColor(textColor ?? noctalTheme.onBackgroundColor.toPlatform())
             .font(.system(size: fontSize))
+            .lineLimit(lineLimit)
     }
 }
 
 
 struct StoryCell_Previews: PreviewProvider {
     static var previews: some View {
-//        StoryCell().previewLayout(PreviewLayout.sizeThatFits)
+        //        StoryCell().previewLayout(PreviewLayout.sizeThatFits)
         
-                ModifiedContent(
-                    content: StoryCell().previewLayout(PreviewLayout.sizeThatFits),
-                    modifier: WithThemes()
-//                    modifier: AllPreviewDevices(deviceTypes: [.iPhone, .iPad])
-                )
+        ModifiedContent(
+            content: StoryCell(story: HNApiMock.companion.stories[0]).previewLayout(PreviewLayout.sizeThatFits),
+            modifier: WithThemes()
+            //                    modifier: AllPreviewDevices(deviceTypes: [.iPhone, .iPad])
+        )
     }
 }
 
