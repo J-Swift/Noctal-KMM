@@ -1,5 +1,7 @@
 package com.radreichley.noctal.android
 
+import android.content.res.Configuration
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
@@ -10,7 +12,6 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -18,7 +19,6 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.radreichley.noctal.android.account.AccountView
 import com.radreichley.noctal.android.base.LocalNoctalTheme
-import com.radreichley.noctal.android.base.PreviewThemeProvider
 import com.radreichley.noctal.android.search.SearchView
 import com.radreichley.noctal.android.settings.SettingsView
 import com.radreichley.noctal.android.stories.StoryView
@@ -82,12 +82,12 @@ private fun RowScope.NavItem(route: NavRoute, currentRoute: String, onClick: () 
     )
 }
 
-@Preview(showSystemUi = true)
+@Preview(showSystemUi = true, group = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(showSystemUi = true, group = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-fun AppLayout_Preview(
-    @PreviewParameter(PreviewThemeProvider::class) useDarkTheme: Boolean
-) {
-    val theme = if (useDarkTheme) DarkTheme() else LightTheme()
+fun AppLayout_Preview() {
+    val theme = if (isSystemInDarkTheme()) DarkTheme() else LightTheme()
+
     CompositionLocalProvider(LocalNoctalTheme provides theme) {
         AppLayout()
     }

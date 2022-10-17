@@ -10,41 +10,40 @@ import Foundation
 import SwiftUI
 import shared
 
+extension Story: Identifiable {
+    
+}
+
 struct StoriesView: View {
     @Environment(\.noctalTheme) var noctalTheme
     
     @State var stories = [Story]()
+    @State var selectedIds = Set<String>()
     
     var body: some View {
         NavigationView {
-            List {
-                ForEach(stories, id: \.id) { it in
-                    ZStack {
-                        VStack(spacing: 0) {
-                            StoryCell(story: it)
-                            
-                            Divider()
-                        }
+            List(stories, selection: $selectedIds) { it in
+                let idx = stories.firstIndex(of: it)!
+                let isSelected = selectedIds.contains(it.id)
+                
+                ZStack {
+                    VStack(spacing: 0) {
+                        StoryCell(story: it, index: idx + 1, isSelected: isSelected)
                         
-                        NavigationLink(destination: Text(it.title)) {
-                            EmptyView()
-                        }.frame(width: 0).opacity(0)
+                        Divider()
                     }
-                }.listRowSeparator(.hidden)
-                    .listRowInsets(EdgeInsets())
-            }.listStyle(.plain)
-                .task {
-                    stories = HNApiMock.companion.stories
-//                    stories = await withCheckedContinuation({(context: CheckedContinuation<[Story], Never>) in
-//                        HNApiMock().getStoriesAsync { stories, err in
-////                            if let err = err {
-////                                context.resume(with: .failure())
-////                            } else {
-//                                context.resume(with: .success(stories ?? []))
-////                            }
-//                        }
-//                    })
+                    
+                    NavigationLink(destination: Text(it.title)) {
+                        EmptyView()
+                    }.frame(width: 0).opacity(0)
                 }
+                .listRowSeparator(.hidden)
+                .listRowInsets(EdgeInsets())
+            }
+            .listStyle(.plain)
+            .task {
+                stories = HNApiMock.companion.stories
+            }
         }
     }
 }

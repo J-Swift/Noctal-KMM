@@ -40,7 +40,9 @@ dependencies {
     implementation("androidx.compose.ui:ui-tooling-preview:$composeVersion")
     implementation("androidx.compose.foundation:foundation:$composeVersion")
     implementation("androidx.compose.material:material:$composeVersion")
+
     implementation("androidx.activity:activity-compose:1.6.0")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.5.1")
 
     val navigationVersion = "2.5.2"
     implementation("androidx.navigation:navigation-runtime-ktx:$navigationVersion")

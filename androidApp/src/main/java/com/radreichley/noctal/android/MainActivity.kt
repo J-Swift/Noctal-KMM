@@ -1,5 +1,6 @@
 package com.radreichley.noctal.android
 
+import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -13,11 +14,9 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.radreichley.noctal.android.base.LocalNoctalTheme
-import com.radreichley.noctal.android.base.PreviewThemeProvider
 import com.radreichley.noctal.base.DarkTheme
 import com.radreichley.noctal.base.LightTheme
 
@@ -81,10 +80,9 @@ fun MyApplicationTheme(
     )
 }
 
-@Preview(showSystemUi = true)
+@Preview(showSystemUi = true, group = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(showSystemUi = true, group = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-fun AppWrapper_Preview(
-    @PreviewParameter(PreviewThemeProvider::class) useDarkTheme: Boolean
-) {
-    AppWrapper(useDarkTheme)
+fun AppWrapper_Preview() {
+    AppWrapper(isSystemInDarkTheme())
 }

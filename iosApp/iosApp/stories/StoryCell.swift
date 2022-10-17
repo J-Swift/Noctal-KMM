@@ -16,17 +16,22 @@ fileprivate let styles = StoryCellConfig.Styling.shared
 
 struct StoryCell: View {
     @Environment(\.noctalTheme) var noctalTheme
+    @Environment(\.colorScheme) var colorScheme
     
     var story: Story
+    var index: Int
+    var isSelected: Bool = false
     
     var body: some View {
+        let highlightColor = colorScheme == .light ? styles.CellHighlightLt : styles.CellHighlightDk
+        let placeholderColor = styles.PlaceholderColors[index % styles.PlaceholderColors.count]
+        
         HStack(spacing: 0) {
-            
             ZStack {
                 RoundedRectangle(cornerRadius: dims.DimImgRadius)
                     .frame(width: dims.DimImg, height: dims.DimImg)
                     .padding(.horizontal, dims.DimHPadding)
-                    .foregroundColor(debugColor)
+                    .foregroundColor(placeholderColor.toPlatform())
                 
                 Text(story.placeholderLetter ?? "Y")
                     .foregroundColor(Color.white)
@@ -35,7 +40,7 @@ struct StoryCell: View {
             
             VStack(alignment: .leading, spacing: dims.DimVPadding) {
                 HStack(spacing: dims.DimHPaddingRow) {
-                    StoryLabel(text: "1.")
+                    StoryLabel(text: "\(index).")
                     RoundedRectangle(cornerRadius: dims.DimImgFavicon/2.0)
                         .frame(width: dims.DimImgFavicon, height: dims.DimImgFavicon)
                         .foregroundColor(debugColor)
@@ -61,7 +66,7 @@ struct StoryCell: View {
                 .padding(EdgeInsets(top: dims.DimVPadding, leading: 0, bottom: dims.DimVPadding, trailing: dims.DimHPadding))
                 .layoutPriority(1)
             
-        }.background(noctalTheme.backgroundColor.toPlatform())
+        }.background((isSelected ? highlightColor : noctalTheme.backgroundColor).toPlatform())
     }
 }
 
@@ -81,16 +86,18 @@ fileprivate struct StoryLabel: View {
     }
 }
 
-
 struct StoryCell_Previews: PreviewProvider {
     static var previews: some View {
-        //        StoryCell().previewLayout(PreviewLayout.sizeThatFits)
+        let configs = [
+            (StoryCell(story: HNApiMock.companion.stories[0], index: 1, isSelected: false), "Default"),
+            (StoryCell(story: HNApiMock.companion.stories[0], index: 1, isSelected: true), "Selected")
+        ]
         
-        ModifiedContent(
-            content: StoryCell(story: HNApiMock.companion.stories[0]).previewLayout(PreviewLayout.sizeThatFits),
-            modifier: WithThemes()
-            //                    modifier: AllPreviewDevices(deviceTypes: [.iPhone, .iPad])
-        )
+        ForEach(configs, id: \.1) { (config, title) in
+            ModifiedContent(
+                content: config.previewLayout(PreviewLayout.sizeThatFits),
+                modifier: WithThemes()
+            ).previewDisplayName(title)
+        }
     }
 }
-

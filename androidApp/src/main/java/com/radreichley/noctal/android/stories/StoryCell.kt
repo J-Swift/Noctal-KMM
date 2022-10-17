@@ -1,6 +1,8 @@
 package com.radreichley.noctal.android.stories
 
+import android.content.res.Configuration
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
@@ -14,9 +16,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.radreichley.noctal.android.base.ArbitraryIndexProvider
 import com.radreichley.noctal.android.base.DEBUG_placeholder
 import com.radreichley.noctal.android.base.LocalNoctalTheme
-import com.radreichley.noctal.android.base.PreviewThemeProvider
 import com.radreichley.noctal.android.base.toPlatform
 import com.radreichley.noctal.base.DarkTheme
 import com.radreichley.noctal.base.LightTheme
@@ -30,10 +32,17 @@ private val dims = StoryCellConfig.Dims
 private val styles = StoryCellConfig.Styling
 
 @Composable
-fun StoryCell(story: Story) {
+fun StoryCell(story: Story, index: Int, isSelected: Boolean = false) {
+    val bgColor = when {
+        (isSelected && isSystemInDarkTheme()) -> styles.CellHighlightDk
+        (isSelected && !isSystemInDarkTheme()) -> styles.CellHighlightLt
+        else -> LocalNoctalTheme.current.backgroundColor
+    }
+    val placeholderColor = styles.PlaceholderColors[index % styles.PlaceholderColors.count()]
+
     Row(
         modifier = Modifier
-            .background(LocalNoctalTheme.current.backgroundColor.toPlatform())
+            .background(bgColor.toPlatform())
             .padding(
                 horizontal = dims.DimHPadding.dp,
                 vertical = dims.DimVPadding.dp
@@ -44,10 +53,14 @@ fun StoryCell(story: Story) {
             modifier = Modifier
                 .padding(end = dims.DimHPadding.dp)
                 .size(dims.DimImg.dp, dims.DimImg.dp)
-                .background(debugColor, shape = RoundedCornerShape(dims.DimImgRadius.dp)),
+                .background(placeholderColor.toPlatform(), shape = RoundedCornerShape(dims.DimImgRadius.dp)),
             contentAlignment = Alignment.Center
         ) {
-            Text(story.placeholderLetter ?: "Y", color = Color.White, fontSize = styles.FontSizePlaceholder.sp)
+            Text(
+                story.placeholderLetter ?: "Y",
+                color = Color.White,
+                fontSize = styles.FontSizePlaceholder.sp
+            )
         }
 
         Column(
@@ -58,7 +71,7 @@ fun StoryCell(story: Story) {
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(dims.DimHPaddingRow.dp)
             ) {
-                StoryLabel("1.")
+                StoryLabel("$index.")
                 Box(
                     modifier = Modifier
                         .size(dims.DimImgFavicon.dp, dims.DimImgFavicon.dp)
@@ -111,13 +124,20 @@ fun StoryLabel(
     )
 }
 
-@Preview(showBackground = true)
+@Preview(group = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(group = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 fun StoryCell_Preview(
-    @PreviewParameter(PreviewThemeProvider::class) useDarkTheme: Boolean
+    @PreviewParameter(ArbitraryIndexProvider::class, limit = 2) idx: Int
 ) {
-    val theme = if (useDarkTheme) DarkTheme() else LightTheme()
+    val theme = if (isSystemInDarkTheme()) DarkTheme() else LightTheme()
+    val isSelected = listOf(false, true)[idx]
+
     CompositionLocalProvider(LocalNoctalTheme provides theme) {
-        StoryCell(HNApiMock.stories[0])
+        StoryCell(
+            HNApiMock.stories[0],
+            index = 1,
+            isSelected = isSelected
+        )
     }
 }
