@@ -66,7 +66,8 @@ struct StoryCell: View {
                 .padding(EdgeInsets(top: dims.DimVPadding, leading: 0, bottom: dims.DimVPadding, trailing: dims.DimHPadding))
                 .layoutPriority(1)
             
-        }.background((isSelected ? highlightColor : noctalTheme.backgroundColor).toPlatform())
+        }
+        .background((isSelected ? highlightColor : noctalTheme.backgroundColor).toPlatform())
     }
 }
 

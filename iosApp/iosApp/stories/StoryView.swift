@@ -10,21 +10,20 @@ import Foundation
 import SwiftUI
 import shared
 
-extension Story: Identifiable {
-    
-}
+extension Story: Identifiable { }
 
 struct StoriesView: View {
     @Environment(\.noctalTheme) var noctalTheme
     
     @State var stories = [Story]()
-    @State var selectedIds = Set<String>()
+    @State var selectedId: String?
     
     var body: some View {
         NavigationView {
-            List(stories, selection: $selectedIds) { it in
+            
+            List(stories, selection: $selectedId) { it in
                 let idx = stories.firstIndex(of: it)!
-                let isSelected = selectedIds.contains(it.id)
+                let isSelected = it.id == selectedId
                 
                 ZStack {
                     VStack(spacing: 0) {
@@ -37,10 +36,12 @@ struct StoriesView: View {
                         EmptyView()
                     }.frame(width: 0).opacity(0)
                 }
-                .listRowSeparator(.hidden)
                 .listRowInsets(EdgeInsets())
             }
             .listStyle(.plain)
+            .onAppear {
+                withAnimation { selectedId = nil }
+            }
             .task {
                 stories = HNApiMock.companion.stories
             }
