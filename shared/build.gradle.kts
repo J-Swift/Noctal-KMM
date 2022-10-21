@@ -19,12 +19,7 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core")
-                {
-                    version {
-                        strictly("1.6.3-native-mt")
-                    }
-                }
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
                 implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.4.0")
                 implementation("com.chrynan.uri:uri-core:0.4.0")
             }

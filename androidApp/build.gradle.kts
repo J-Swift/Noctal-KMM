@@ -47,4 +47,6 @@ dependencies {
     val navigationVersion = "2.5.2"
     implementation("androidx.navigation:navigation-runtime-ktx:$navigationVersion")
     implementation("androidx.navigation:navigation-compose:$navigationVersion")
+
+    implementation("com.github.bumptech.glide:compose:1.0.0-alpha.1")
 }

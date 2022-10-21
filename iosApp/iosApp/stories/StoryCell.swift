@@ -27,16 +27,9 @@ struct StoryCell: View {
         let placeholderColor = styles.PlaceholderColors[index % styles.PlaceholderColors.count]
         
         HStack(spacing: 0) {
-            ZStack {
-                RoundedRectangle(cornerRadius: dims.DimImgRadius)
-                    .frame(width: dims.DimImg, height: dims.DimImg)
-                    .padding(.horizontal, dims.DimHPadding)
-                    .foregroundColor(placeholderColor.toPlatform())
-                
-                Text(story.placeholderLetter ?? "Y")
-                    .foregroundColor(Color.white)
-                    .font(.system(size: styles.FontSizePlaceholder))
-            }
+            StoryCellImage(urlPath: "https://placekitten.com/408/287", placeholderColor: placeholderColor, placeholderLetter: story.placeholderLetter)
+                .padding(.horizontal, dims.DimHPadding)
+            
             
             VStack(alignment: .leading, spacing: dims.DimVPadding) {
                 HStack(spacing: dims.DimHPaddingRow) {
@@ -84,6 +77,31 @@ fileprivate struct StoryLabel: View {
             .foregroundColor(textColor ?? noctalTheme.onBackgroundColor.toPlatform())
             .font(.system(size: fontSize))
             .lineLimit(lineLimit)
+    }
+}
+
+fileprivate struct StoryCellImage : View {
+    var urlPath: String?
+    var placeholderColor: NoctalColor
+    var placeholderLetter: String?
+    
+    var body: some View {
+        AsyncImage(url: URL(string: urlPath ?? "")) { it in
+            if let image = it.image {
+                image
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+            } else {
+                ZStack {
+                    placeholderColor.toPlatform()
+                    Text(placeholderLetter ?? "Y")
+                        .foregroundColor(Color.white)
+                        .font(.system(size: styles.FontSizePlaceholder))
+                }
+            }
+        }
+        .frame(width: dims.DimImg, height: dims.DimImg)
+        .cornerRadius(dims.DimImgRadius)
     }
 }
 

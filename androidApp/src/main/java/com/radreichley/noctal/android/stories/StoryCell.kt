@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalGlideComposeApi::class)
+
 package com.radreichley.noctal.android.stories
 
 import android.content.res.Configuration
@@ -16,6 +18,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
+import com.bumptech.glide.integration.compose.GlideImage
 import com.radreichley.noctal.android.base.ArbitraryIndexProvider
 import com.radreichley.noctal.android.base.DEBUG_placeholder
 import com.radreichley.noctal.android.base.LocalNoctalTheme
@@ -53,7 +57,10 @@ fun StoryCell(story: Story, index: Int, isSelected: Boolean = false) {
             modifier = Modifier
                 .padding(end = dims.DimHPadding.dp)
                 .size(dims.DimImg.dp, dims.DimImg.dp)
-                .background(placeholderColor.toPlatform(), shape = RoundedCornerShape(dims.DimImgRadius.dp)),
+                .background(
+                    placeholderColor.toPlatform(),
+                    shape = RoundedCornerShape(dims.DimImgRadius.dp)
+                ),
             contentAlignment = Alignment.Center
         ) {
             Text(
@@ -61,6 +68,8 @@ fun StoryCell(story: Story, index: Int, isSelected: Boolean = false) {
                 color = Color.White,
                 fontSize = styles.FontSizePlaceholder.sp
             )
+
+            GlideImage(model = "https://placekitten.com/408/287", contentDescription = null)
         }
 
         Column(
