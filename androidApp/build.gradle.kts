@@ -53,5 +53,4 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:$navigationVersion")
 
     implementation("com.github.bumptech.glide:compose:1.0.0-alpha.1")
-    compileOnly("io.realm.kotlin:library-base:1.4.0")
 }
