@@ -18,6 +18,7 @@
 		BFC08FDF28FA66280025C228 /* SearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFC08FDE28FA66280025C228 /* SearchView.swift */; };
 		BFC08FE128FA663A0025C228 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFC08FE028FA663A0025C228 /* SettingsView.swift */; };
 		BFC08FE328FA664C0025C228 /* StoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFC08FE228FA664C0025C228 /* StoryView.swift */; };
+		BFC1F0C62905C2CB0040F18F /* IosStoriesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFC1F0C52905C2CB0040F18F /* IosStoriesViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -47,6 +48,7 @@
 		BFC08FDE28FA66280025C228 /* SearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchView.swift; sourceTree = "<group>"; };
 		BFC08FE028FA663A0025C228 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		BFC08FE228FA664C0025C228 /* StoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoryView.swift; sourceTree = "<group>"; };
+		BFC1F0C52905C2CB0040F18F /* IosStoriesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IosStoriesViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -112,6 +114,7 @@
 			children = (
 				BFC08FE228FA664C0025C228 /* StoryView.swift */,
 				BF0F8E2C28FAF04700CDBF63 /* StoryCell.swift */,
+				BFC1F0C52905C2CB0040F18F /* IosStoriesViewModel.swift */,
 			);
 			path = stories;
 			sourceTree = "<group>";
@@ -259,6 +262,7 @@
 				BF0F8E2D28FAF04700CDBF63 /* StoryCell.swift in Sources */,
 				BFC08FDF28FA66280025C228 /* SearchView.swift in Sources */,
 				BFC08FE328FA664C0025C228 /* StoryView.swift in Sources */,
+				BFC1F0C62905C2CB0040F18F /* IosStoriesViewModel.swift in Sources */,
 				BFC08FDD28FA65810025C228 /* AccountView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

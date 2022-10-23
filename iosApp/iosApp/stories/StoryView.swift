@@ -13,10 +13,24 @@ import shared
 extension Story: Identifiable { }
 
 struct StoriesView: View {
+    @ObservedObject var vm = IosStoriesViewModel()
+    
+    var body: some View {
+        StoriesView_Content(stories: vm.stories)
+            .onAppear {
+                vm.start()
+            }
+            .onDisappear {
+                vm.stop()
+            }
+    }
+}
+
+struct StoriesView_Content: View {
     @Environment(\.noctalTheme) var noctalTheme
     
-    @State var stories = [Story]()
     @State var selectedId: String?
+    var stories: [Story] = [Story]()
     
     var body: some View {
         NavigationView {
@@ -42,9 +56,6 @@ struct StoriesView: View {
             .onAppear {
                 withAnimation { selectedId = nil }
             }
-            .task {
-                stories = HNApiMock.companion.stories
-            }
         }
     }
 }
@@ -52,7 +63,7 @@ struct StoriesView: View {
 struct StoriesView_Previews: PreviewProvider {
     static var previews: some View {
         ModifiedContent(
-            content: StoriesView(),
+            content: StoriesView_Content(selectedId: "", stories: StoriesService.companion.mockStories),
             modifier: WithThemes()
             //            modifier: AllPreviewDevices(deviceTypes: [.iPhone, .iPad]))
         )

@@ -29,9 +29,9 @@ import com.radreichley.noctal.stories.StoriesService
 import com.radreichley.noctal.stories.StoryCellConfig
 
 @Composable
-fun StoryView(modifier: Modifier = Modifier, viewModel: StoriesViewModel = viewModel()) {
+fun StoryView(modifier: Modifier = Modifier, viewModel: AndroidStoriesViewModel = viewModel()) {
     StoryView_Content(
-        stories = viewModel.stories.collectAsState(listOf()).value,
+        stories = viewModel.observeStories().collectAsState(listOf()).value,
         modifier
     )
 }
@@ -67,11 +67,6 @@ private fun StoryView_Content(stories: List<Story>, modifier: Modifier = Modifie
             }
         }
     }
-}
-
-class StoriesViewModel : ViewModel() {
-    private val storiesSvc = StoriesService(Database(), HNApiMock(), MetaFetcher())
-    val stories = storiesSvc.stories
 }
 
 @Preview(showSystemUi = true, group = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)

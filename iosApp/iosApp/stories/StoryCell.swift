@@ -10,7 +10,6 @@ import Foundation
 import SwiftUI
 import shared
 
-fileprivate let debugColor = NoctalColor.DEBUG_placeholder()
 fileprivate let dims = StoryCellConfig.Dims.shared
 fileprivate let styles = StoryCellConfig.Styling.shared
 
@@ -27,16 +26,14 @@ struct StoryCell: View {
         let placeholderColor = styles.PlaceholderColors[index % styles.PlaceholderColors.count]
         
         HStack(spacing: 0) {
-            StoryCellImage(urlPath: "https://placekitten.com/408/287", placeholderColor: placeholderColor, placeholderLetter: story.placeholderLetter)
+            StoryCellImage(urlPath: story.imagePath, placeholderColor: placeholderColor, placeholderLetter: story.placeholderLetter)
                 .padding(.horizontal, dims.DimHPadding)
             
             
             VStack(alignment: .leading, spacing: dims.DimVPadding) {
                 HStack(spacing: dims.DimHPaddingRow) {
                     StoryLabel(text: "\(index).")
-                    RoundedRectangle(cornerRadius: dims.DimImgFavicon/2.0)
-                        .frame(width: dims.DimImgFavicon, height: dims.DimImgFavicon)
-                        .foregroundColor(debugColor)
+                    StoryCellFavicon(urlPath: story.favIconPath)
                     StoryLabel(text: story.displayUrl ?? " ", textColor: noctalTheme.primaryColor.toPlatform())
                         .minimumScaleFactor(0.2)
                 }
@@ -44,7 +41,7 @@ struct StoryCell: View {
                 StoryLabel(text: story.title, fontSize: styles.FontSizeTitle, lineLimit: nil)
                 
                 HStack(spacing: dims.DimHPaddingRow) {
-                    StoryLabel(text: story.author)
+                    StoryLabel(text: story.submitter)
                     StoryLabel(text: "•")
                     StoryLabel(text: "4h ago")
                 }
@@ -105,11 +102,29 @@ fileprivate struct StoryCellImage : View {
     }
 }
 
+fileprivate struct StoryCellFavicon : View {
+    var urlPath: String?
+    
+    var body: some View {
+        AsyncImage(url: URL(string: urlPath ?? "")) { it in
+            if let image = it.image {
+                image
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+            } else {
+                EmptyView()
+            }
+        }
+        .frame(width: dims.DimImgFavicon, height: dims.DimImgFavicon)
+        .cornerRadius(dims.DimImgFavicon/2.0)
+    }
+}
+
 struct StoryCell_Previews: PreviewProvider {
     static var previews: some View {
         let configs = [
-            (StoryCell(story: HNApiMock.companion.stories[0], index: 1, isSelected: false), "Default"),
-            (StoryCell(story: HNApiMock.companion.stories[0], index: 1, isSelected: true), "Selected")
+            (StoryCell(story: StoriesService.companion.mockStories[0], index: 1, isSelected: false), "Default"),
+            (StoryCell(story: StoriesService.companion.mockStories[0], index: 1, isSelected: true), "Selected")
         ]
         
         ForEach(configs, id: \.1) { (config, title) in
