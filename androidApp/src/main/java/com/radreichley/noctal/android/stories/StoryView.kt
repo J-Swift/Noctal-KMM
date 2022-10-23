@@ -16,22 +16,24 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.radreichley.noctal.android.base.LocalNoctalTheme
 import com.radreichley.noctal.android.base.toPlatform
 import com.radreichley.noctal.base.DarkTheme
 import com.radreichley.noctal.base.LightTheme
+import com.radreichley.noctal.base.db.Database
+import com.radreichley.noctal.base.db.Story
 import com.radreichley.noctal.module.HN.HNApi.HNApiMock
-import com.radreichley.noctal.module.HN.models.Story
+import com.radreichley.noctal.module.meta_fetcher.meta_fetcher.MetaFetcher
+import com.radreichley.noctal.stories.StoriesService
 import com.radreichley.noctal.stories.StoryCellConfig
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
 
 @Composable
 fun StoryView(modifier: Modifier = Modifier, viewModel: StoriesViewModel = viewModel()) {
-    StoryView_Content(stories = viewModel.stories.collectAsState().value, modifier)
+    StoryView_Content(
+        stories = viewModel.stories.collectAsState(listOf()).value,
+        modifier
+    )
 }
 
 @Composable
@@ -68,15 +70,8 @@ private fun StoryView_Content(stories: List<Story>, modifier: Modifier = Modifie
 }
 
 class StoriesViewModel : ViewModel() {
-    private val _stories = MutableStateFlow<List<Story>>(listOf())
-    val stories = _stories.asStateFlow()
-
-    init {
-        viewModelScope.launch {
-            val newStories = HNApiMock().getStoriesAsync()
-            _stories.value = newStories
-        }
-    }
+    private val storiesSvc = StoriesService(Database(), HNApiMock(), MetaFetcher())
+    val stories = storiesSvc.stories
 }
 
 @Preview(showSystemUi = true, group = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
@@ -86,6 +81,6 @@ private fun StoryView_Preview() {
     val theme = if (isSystemInDarkTheme()) DarkTheme() else LightTheme()
 
     CompositionLocalProvider(LocalNoctalTheme provides theme) {
-        StoryView_Content(HNApiMock.stories)
+        StoryView_Content(StoriesService.mockStories)
     }
 }

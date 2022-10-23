@@ -1,6 +1,6 @@
 package com.radreichley.noctal.module.HN.HNApi
 
-import com.radreichley.noctal.module.HN.models.Story
+import com.radreichley.noctal.module.HN.models.StoryDto
 import com.radreichley.noctal.module.HN.models.StoryType
 import kotlinx.coroutines.delay
 import kotlinx.datetime.Instant
@@ -8,7 +8,7 @@ import kotlinx.datetime.Instant
 class HNApiMock : IHNApi {
     companion object {
         val stories = listOf(
-            Story(
+            StoryDto(
                 "16582136",
                 "Stephen Hawking has died",
                 "Cogito",
@@ -19,7 +19,7 @@ class HNApiMock : IHNApi {
                 StoryType.Story,
                 null
             ),
-            Story(
+            StoryDto(
                 "11116274",
                 "A Message to Our Customers",
                 "epaga",
@@ -30,7 +30,7 @@ class HNApiMock : IHNApi {
                 StoryType.Story,
                 null
             ),
-            Story(
+            StoryDto(
                 "31261533",
                 "Mechanical Watch",
                 "todsacerdoti",
@@ -41,7 +41,7 @@ class HNApiMock : IHNApi {
                 StoryType.Story,
                 null
             ),
-            Story(
+            StoryDto(
                 "3078128",
                 "Steve Jobs has passed away.",
                 "patricktomas",
@@ -52,7 +52,7 @@ class HNApiMock : IHNApi {
                 StoryType.Story,
                 ""
             ),
-            Story(
+            StoryDto(
                 "24872911",
                 "YouTube-dl has received a DMCA takedown from RIAA",
                 "phantop",
@@ -63,7 +63,7 @@ class HNApiMock : IHNApi {
                 StoryType.Story,
                 null
             ),
-            Story(
+            StoryDto(
                 "13682022",
                 "Reflecting on one very, very strange year at Uber",
                 "grey-area",
@@ -74,7 +74,7 @@ class HNApiMock : IHNApi {
                 StoryType.Story,
                 null
             ),
-            Story(
+            StoryDto(
                 "26699106",
                 "Google’s copying of the Java SE API was fair use [pdf]",
                 "pdoconnell",
@@ -85,7 +85,7 @@ class HNApiMock : IHNApi {
                 StoryType.Story,
                 null
             ),
-            Story(
+            StoryDto(
                 "27424195",
                 "Replit used legal threats to kill my open-source project",
                 "raxod502",
@@ -96,7 +96,7 @@ class HNApiMock : IHNApi {
                 StoryType.Story,
                 null
             ),
-            Story(
+            StoryDto(
                 "26296339",
                 "How I cut GTA Online loading times by 70%",
                 "kuroguro",
@@ -107,7 +107,7 @@ class HNApiMock : IHNApi {
                 StoryType.Story,
                 null
             ),
-            Story(
+            StoryDto(
                 "23065782",
                 "Bye, Amazon",
                 "grey-area",
@@ -118,7 +118,7 @@ class HNApiMock : IHNApi {
                 StoryType.Story,
                 null
             ),
-            Story(
+            StoryDto(
                 "30347719",
                 "Google Search Is Dying",
                 "dbrereton",
@@ -129,7 +129,7 @@ class HNApiMock : IHNApi {
                 StoryType.Story,
                 null
             ),
-            Story(
+            StoryDto(
                 "22107823",
                 "Every Google result now looks like an ad",
                 "cmod",
@@ -140,7 +140,7 @@ class HNApiMock : IHNApi {
                 StoryType.Story,
                 null
             ),
-            Story(
+            StoryDto(
                 "28550764",
                 "A search engine that favors text-heavy sites and punishes modern web design",
                 "Funes-",
@@ -151,7 +151,7 @@ class HNApiMock : IHNApi {
                 StoryType.Story,
                 null
             ),
-            Story(
+            StoryDto(
                 "29845208",
                 "My First Impressions of Web3",
                 "natdempk",
@@ -162,7 +162,7 @@ class HNApiMock : IHNApi {
                 StoryType.Story,
                 null
             ),
-            Story(
+            StoryDto(
                 "15924794",
                 "F.C.C. Repeals Net Neutrality Rules",
                 "panny",
@@ -173,7 +173,7 @@ class HNApiMock : IHNApi {
                 StoryType.Story,
                 null
             ),
-            Story(
+            StoryDto(
                 "3742902",
                 "Show HN: This up votes itself",
                 "olalonde",
@@ -184,7 +184,7 @@ class HNApiMock : IHNApi {
                 StoryType.ShowHn,
                 ""
             ),
-            Story(
+            StoryDto(
                 "26487854",
                 "GitHub, fuck your name change",
                 "leontrolski",
@@ -195,7 +195,7 @@ class HNApiMock : IHNApi {
                 StoryType.Story,
                 null
             ),
-            Story(
+            StoryDto(
                 "20052623",
                 "Switch from Chrome to Firefox",
                 "WisNorCan",
@@ -206,7 +206,7 @@ class HNApiMock : IHNApi {
                 StoryType.Story,
                 null
             ),
-            Story(
+            StoryDto(
                 "22918980",
                 "Ask HN: I'm a software engineer going blind, how should I prepare?",
                 "zachrip",
@@ -217,7 +217,7 @@ class HNApiMock : IHNApi {
                 StoryType.AskHn,
                 "I&#x27;m a 24 y&#x2F;o full stack engineer (I know some of you are rolling your eyes right now, just highlighting that I have experience on frontend apps as well as backend architecture). I&#x27;ve been working professionally for ~7 years building mostly javascript projects but also some PHP. Two years ago I was diagnosed with a condition called &quot;Usher&#x27;s Syndrome&quot; - characterized by hearing loss, balance issues, and progressive vision loss.<p>I know there are blind software engineers out there. My main questions are:<p>- Are there blind frontend engineers?<p>- What kinds of software engineering lend themselves to someone with limited vision? Backend only?<p>- Besides a screen reader, what are some of the best tools for building software with limited vision?<p>- Does your company employ blind engineers? How well does it work? What kind of engineer are they?<p>I&#x27;m really trying to get ahead of this thing and prepare myself as my vision is degrading rather quickly. I&#x27;m not sure what I can do if I can&#x27;t do SE as I don&#x27;t have any formal education in anything. I&#x27;ve worked really hard to get to where I am and don&#x27;t want it to go to waste.<p>Thank you for any input, and stay safe out there!<p>Edit:<p>Thank you all for your links, suggestions, and moral support, I really appreciate it. Since my diagnosis I&#x27;ve slowly developed a crippling anxiety centered around a feeling that I need to figure out the rest of my life before it&#x27;s too late. I know I shouldn&#x27;t think this way but it is hard not to. I&#x27;m very independent and I feel a pressure to &quot;show up.&quot; I will look into these opportunities mentioned and try to get in touch with some more members of the blind engineering community."
             ),
-            Story(
+            StoryDto(
                 "13718752",
                 "Cloudflare Reverse Proxies Are Dumping Uninitialized Memory",
                 "tptacek",
@@ -231,7 +231,7 @@ class HNApiMock : IHNApi {
         )
     }
 
-    override suspend fun getStoriesAsync(): List<Story> {
+    override suspend fun getStoriesAsync(): List<StoryDto> {
         delay(2000)
 
         return stories

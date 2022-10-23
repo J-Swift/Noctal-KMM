@@ -17,4 +17,3 @@ dependencyResolutionManagement {
 rootProject.name = "Noctal"
 include(":androidApp")
 include(":shared")
- 

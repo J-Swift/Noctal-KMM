@@ -12,7 +12,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
@@ -27,7 +29,8 @@ import com.radreichley.noctal.android.base.toPlatform
 import com.radreichley.noctal.base.DarkTheme
 import com.radreichley.noctal.base.LightTheme
 import com.radreichley.noctal.module.HN.HNApi.HNApiMock
-import com.radreichley.noctal.module.HN.models.Story
+import com.radreichley.noctal.base.db.Story
+import com.radreichley.noctal.stories.StoriesService
 import com.radreichley.noctal.stories.StoryCellConfig
 import com.radreichley.noctal.base.theming.Color as NoctalColor
 
@@ -60,7 +63,8 @@ fun StoryCell(story: Story, index: Int, isSelected: Boolean = false) {
                 .background(
                     placeholderColor.toPlatform(),
                     shape = RoundedCornerShape(dims.DimImgRadius.dp)
-                ),
+                )
+                .clip(RoundedCornerShape(dims.DimImgRadius.dp)),
             contentAlignment = Alignment.Center
         ) {
             Text(
@@ -69,7 +73,11 @@ fun StoryCell(story: Story, index: Int, isSelected: Boolean = false) {
                 fontSize = styles.FontSizePlaceholder.sp
             )
 
-            GlideImage(model = "https://placekitten.com/408/287", contentDescription = null)
+            GlideImage(
+                model = story.imagePath,
+                contentDescription = null,
+                contentScale = ContentScale.Crop
+            )
         }
 
         Column(
@@ -84,8 +92,10 @@ fun StoryCell(story: Story, index: Int, isSelected: Boolean = false) {
                 Box(
                     modifier = Modifier
                         .size(dims.DimImgFavicon.dp, dims.DimImgFavicon.dp)
-                        .background(debugColor, shape = RoundedCornerShape(50))
-                )
+                        .clip(RoundedCornerShape(50))
+                ) {
+                    GlideImage(model = story.favIconPath, contentDescription = null)
+                }
                 // TODO(jpr): autosizing text
                 StoryLabel(
                     story.displayUrl ?: " ",
@@ -99,7 +109,7 @@ fun StoryCell(story: Story, index: Int, isSelected: Boolean = false) {
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(dims.DimHPaddingRow.dp)
             ) {
-                StoryLabel(story.author)
+                StoryLabel(story.submitter)
                 StoryLabel("•")
                 StoryLabel("4h ago")
             }
@@ -144,7 +154,7 @@ fun StoryCell_Preview(
 
     CompositionLocalProvider(LocalNoctalTheme provides theme) {
         StoryCell(
-            HNApiMock.stories[0],
+            StoriesService.mockStories[0],
             index = 1,
             isSelected = isSelected
         )
