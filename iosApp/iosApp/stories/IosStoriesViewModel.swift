@@ -22,13 +22,13 @@ class ObservableViewModel {
 }
 
 class IosStoriesViewModel: ObservableViewModel, ObservableObject {
-    @Published var stories: [Story] = []
+    @Published var stories: [StoryWithMeta] = []
 
-    private let vm: SharedStoriesViewModel = SharedStoriesViewModel(storiesSvc: StoriesService(db: Database(), hnApi: HNApiMock(), metaFetcher: MetaFetcher()))
+    private let vm: SharedStoriesViewModel = SharedStoriesViewModel(storiesRepository: StoriesRepository(db: Database(), api: HNApiMock(), metaFetcher: MetaFetcher()))
         
     func start() {
         addObserver(observer: vm.observeStories().watch { stories in
-            self.stories = stories as! [Story]
+            self.stories = stories as! [StoryWithMeta]
         })
     }
     

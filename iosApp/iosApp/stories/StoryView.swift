@@ -11,6 +11,13 @@ import SwiftUI
 import shared
 
 extension Story: Identifiable { }
+extension StoryWithMeta: Identifiable {
+    public var id: String {
+        get {
+            story.id
+        }
+    }
+}
 
 struct StoriesView: View {
     @ObservedObject var vm = IosStoriesViewModel()
@@ -30,23 +37,23 @@ struct StoriesView_Content: View {
     @Environment(\.noctalTheme) var noctalTheme
     
     @State var selectedId: String?
-    var stories: [Story] = [Story]()
+    var stories: [StoryWithMeta] = [StoryWithMeta]()
     
     var body: some View {
         NavigationView {
             
             List(stories, selection: $selectedId) { it in
                 let idx = stories.firstIndex(of: it)!
-                let isSelected = it.id == selectedId
+                let isSelected = it.story.id == selectedId
                 
                 ZStack {
                     VStack(spacing: 0) {
-                        StoryCell(story: it, index: idx + 1, isSelected: isSelected)
+                        StoryCell(data: it, index: idx + 1, isSelected: isSelected)
                         
                         Divider()
                     }
                     
-                    NavigationLink(destination: Text(it.title)) {
+                    NavigationLink(destination: Text(it.story.title)) {
                         EmptyView()
                     }.frame(width: 0).opacity(0)
                 }
@@ -62,8 +69,11 @@ struct StoriesView_Content: View {
 
 struct StoriesView_Previews: PreviewProvider {
     static var previews: some View {
+        let stories = StoriesRepositoryKt.previewStories.map {
+            StoryWithMeta(story: $0, meta: nil)
+        }
         ModifiedContent(
-            content: StoriesView_Content(selectedId: "", stories: StoriesService.companion.mockStories),
+            content: StoriesView_Content(selectedId: "", stories: stories),
             modifier: WithThemes()
             //            modifier: AllPreviewDevices(deviceTypes: [.iPhone, .iPad]))
         )

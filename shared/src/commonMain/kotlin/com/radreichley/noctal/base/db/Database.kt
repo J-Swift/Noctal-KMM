@@ -7,7 +7,7 @@ class Database {
     val realm: Realm
 
     init {
-        val config = RealmConfiguration.Builder(schema = setOf(Story::class))
+        val config = RealmConfiguration.Builder(schema = setOf(StoryDao::class, StoryMetaDao::class))
             .deleteRealmIfMigrationNeeded()
             .build()
         realm = Realm.open(config)
@@ -15,5 +15,9 @@ class Database {
         realm.writeBlocking {
             deleteAll()
         }
+    }
+
+    fun getStories() {
+
     }
 }

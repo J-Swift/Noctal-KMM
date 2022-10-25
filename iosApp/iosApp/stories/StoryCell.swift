@@ -17,7 +17,7 @@ struct StoryCell: View {
     @Environment(\.noctalTheme) var noctalTheme
     @Environment(\.colorScheme) var colorScheme
     
-    var story: Story
+    var data: StoryWithMeta
     var index: Int
     var isSelected: Bool = false
     
@@ -26,31 +26,31 @@ struct StoryCell: View {
         let placeholderColor = styles.PlaceholderColors[index % styles.PlaceholderColors.count]
         
         HStack(spacing: 0) {
-            StoryCellImage(urlPath: story.imagePath, placeholderColor: placeholderColor, placeholderLetter: story.placeholderLetter)
+            StoryCellImage(urlPath: data.meta?.imagePath, placeholderColor: placeholderColor, placeholderLetter: data.story.placeholderLetter)
                 .padding(.horizontal, dims.DimHPadding)
             
             
             VStack(alignment: .leading, spacing: dims.DimVPadding) {
                 HStack(spacing: dims.DimHPaddingRow) {
                     StoryLabel(text: "\(index).")
-                    StoryCellFavicon(urlPath: story.favIconPath)
-                    StoryLabel(text: story.displayUrl ?? " ", textColor: noctalTheme.primaryColor.toPlatform())
+                    StoryCellFavicon(urlPath: data.meta?.favIconPath)
+                    StoryLabel(text: data.story.displayUrl ?? " ", textColor: noctalTheme.primaryColor.toPlatform())
                         .minimumScaleFactor(0.2)
                 }
                 
-                StoryLabel(text: story.title, fontSize: styles.FontSizeTitle, lineLimit: nil)
+                StoryLabel(text: data.story.title, fontSize: styles.FontSizeTitle, lineLimit: nil)
                 
                 HStack(spacing: dims.DimHPaddingRow) {
-                    StoryLabel(text: story.submitter)
+                    StoryLabel(text: data.story.submitter)
                     StoryLabel(text: "•")
                     StoryLabel(text: "4h ago")
                 }
                 
                 HStack(spacing: dims.DimHPaddingRow) {
                     StoryLabel(text: "↑")
-                    StoryLabel(text: String(story.score))
+                    StoryLabel(text: String(data.story.score))
                     StoryLabel(text: "•")
-                    StoryLabel(text: "\(story.numComments) comments")
+                    StoryLabel(text: "\(data.story.numComments) comments")
                 }
             }.frame(maxWidth: .infinity, alignment: .leading)
                 .padding(EdgeInsets(top: dims.DimVPadding, leading: 0, bottom: dims.DimVPadding, trailing: dims.DimHPadding))
@@ -122,9 +122,12 @@ fileprivate struct StoryCellFavicon : View {
 
 struct StoryCell_Previews: PreviewProvider {
     static var previews: some View {
+        let data = StoryWithMeta(
+            story: StoriesRepositoryKt.previewStories[0],
+            meta: StoriesRepositoryKt.previewStoryMetas[0])
         let configs = [
-            (StoryCell(story: StoriesService.companion.mockStories[0], index: 1, isSelected: false), "Default"),
-            (StoryCell(story: StoriesService.companion.mockStories[0], index: 1, isSelected: true), "Selected")
+            (StoryCell(data: data, index: 1, isSelected: false), "Default"),
+            (StoryCell(data: data, index: 1, isSelected: true), "Selected")
         ]
         
         ForEach(configs, id: \.1) { (config, title) in

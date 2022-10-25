@@ -18,7 +18,7 @@ data class StoryDto(
     val createdAt: Instant,
     val score: Int,
     val numComments: Int,
-    val typeOfStore: StoryType,
+    val typeOfStory: StoryType,
     val storyText: String?
 
 )

@@ -23,23 +23,17 @@ import androidx.compose.ui.unit.sp
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.radreichley.noctal.android.base.ArbitraryIndexProvider
-import com.radreichley.noctal.android.base.DEBUG_placeholder
 import com.radreichley.noctal.android.base.LocalNoctalTheme
 import com.radreichley.noctal.android.base.toPlatform
 import com.radreichley.noctal.base.DarkTheme
 import com.radreichley.noctal.base.LightTheme
-import com.radreichley.noctal.module.HN.HNApi.HNApiMock
-import com.radreichley.noctal.base.db.Story
-import com.radreichley.noctal.stories.StoriesService
-import com.radreichley.noctal.stories.StoryCellConfig
-import com.radreichley.noctal.base.theming.Color as NoctalColor
+import com.radreichley.noctal.stories.*
 
-private val debugColor = NoctalColor.DEBUG_placeholder()
 private val dims = StoryCellConfig.Dims
 private val styles = StoryCellConfig.Styling
 
 @Composable
-fun StoryCell(story: Story, index: Int, isSelected: Boolean = false) {
+fun StoryCell(data: StoryWithMeta, index: Int, isSelected: Boolean = false) {
     val bgColor = when {
         (isSelected && isSystemInDarkTheme()) -> styles.CellHighlightDk
         (isSelected && !isSystemInDarkTheme()) -> styles.CellHighlightLt
@@ -68,16 +62,18 @@ fun StoryCell(story: Story, index: Int, isSelected: Boolean = false) {
             contentAlignment = Alignment.Center
         ) {
             Text(
-                story.placeholderLetter ?: "Y",
+                data.story.placeholderLetter ?: "Y",
                 color = Color.White,
                 fontSize = styles.FontSizePlaceholder.sp
             )
 
-            GlideImage(
-                model = story.imagePath,
-                contentDescription = null,
-                contentScale = ContentScale.Crop
-            )
+            data.meta?.imagePath?.let {
+                GlideImage(
+                    model = it,
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop
+                )
+            }
         }
 
         Column(
@@ -94,22 +90,24 @@ fun StoryCell(story: Story, index: Int, isSelected: Boolean = false) {
                         .size(dims.DimImgFavicon.dp, dims.DimImgFavicon.dp)
                         .clip(RoundedCornerShape(50))
                 ) {
-                    GlideImage(model = story.favIconPath, contentDescription = null)
+                    data.meta?.favIconPath?.let {
+                        GlideImage(model = it, contentDescription = null)
+                    }
                 }
                 // TODO(jpr): autosizing text
                 StoryLabel(
-                    story.displayUrl ?: " ",
+                    data.story.displayUrl ?: " ",
                     textColor = LocalNoctalTheme.current.primaryColor.toPlatform()
                 )
             }
 
-            StoryLabel(story.title, fontSize = styles.FontSizeTitle, lineLimit = null)
+            StoryLabel(data.story.title, fontSize = styles.FontSizeTitle, lineLimit = null)
 
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(dims.DimHPaddingRow.dp)
             ) {
-                StoryLabel(story.submitter)
+                StoryLabel(data.story.submitter)
                 StoryLabel("•")
                 StoryLabel("4h ago")
             }
@@ -119,9 +117,9 @@ fun StoryCell(story: Story, index: Int, isSelected: Boolean = false) {
                 horizontalArrangement = Arrangement.spacedBy(dims.DimHPaddingRow.dp)
             ) {
                 StoryLabel("↑")
-                StoryLabel(story.score.toString())
+                StoryLabel(data.story.score.toString())
                 StoryLabel("•")
-                StoryLabel("${story.numComments} comments")
+                StoryLabel("${data.story.numComments} comments")
             }
         }
     }
@@ -154,7 +152,7 @@ fun StoryCell_Preview(
 
     CompositionLocalProvider(LocalNoctalTheme provides theme) {
         StoryCell(
-            StoriesService.mockStories[0],
+            StoryWithMeta(previewStories[0], previewStoryMetas[0]),
             index = 1,
             isSelected = isSelected
         )
