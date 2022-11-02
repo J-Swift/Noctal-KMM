@@ -19,11 +19,38 @@ import androidx.compose.ui.unit.sp
 import com.radreichley.noctal.android.base.LocalNoctalTheme
 import com.radreichley.noctal.base.DarkTheme
 import com.radreichley.noctal.base.LightTheme
+import com.radreichley.noctal.module.meta_fetcher.meta_fetcher.MetaFetcher
+import com.radreichley.noctal.module.meta_fetcher.meta_fetcher.RegexEngine
 
+
+class AndroidEngine : RegexEngine
+{
+    override fun isMatch(pattern: String, target: String): Boolean {
+        return pattern.toRegex(RegexOption.IGNORE_CASE).matches(target)
+    }
+
+    override fun matchesFor(pattern: String, target: String): List<String> {
+        return pattern.toRegex(RegexOption.IGNORE_CASE).findAll(target).map {
+            it.value
+        }.toList()
+    }
+
+    override fun valueFor(pattern: String, target: String, groupNumber: Int?): String? {
+        val res = pattern.toRegex(RegexOption.IGNORE_CASE).find(target)
+        if (groupNumber == null) {
+            return res?.value
+        }
+
+        return res?.let {
+            it.groups[groupNumber]!!.value
+        }
+    }
+}
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        MetaFetcher.engine = AndroidEngine()
         setContent {
             AppWrapper(isSystemInDarkTheme())
         }
