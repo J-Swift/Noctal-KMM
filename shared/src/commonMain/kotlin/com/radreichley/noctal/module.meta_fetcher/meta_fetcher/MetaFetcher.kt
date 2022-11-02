@@ -97,10 +97,15 @@ class MetaFetcher : IMetaFetcher {
                                 if (parserResult.ogProperty.equals("og:image", true)) {
 //                                    println("JIMMY urlPath [${parserResult.urlPath}]")
                                     val res = try {
-                                        URLBuilder(url).let {
-                                            it.path(parserResult.urlPath)
-                                            it.build()
-                                        }
+                                        val tempResult = Url(parserResult.urlPath)
+
+                                        if (tempResult.host != "localhost")
+                                            tempResult
+                                        else
+                                            URLBuilder(url).let {
+                                                it.path(parserResult.urlPath)
+                                                it.build()
+                                            }
                                     } catch (e: URLParserException) {
                                         null
                                     }
@@ -116,10 +121,15 @@ class MetaFetcher : IMetaFetcher {
                                 if (score != null && score > favIconScore) {
                                     favIconScore = score
                                     val res = try {
-                                        URLBuilder(url).let {
-                                            it.path(parserResult.urlPath)
-                                            it.build()
-                                        }
+                                        val tempResult = Url(parserResult.urlPath)
+
+                                        if (tempResult.host != "localhost")
+                                            tempResult
+                                        else
+                                            URLBuilder(url).let {
+                                                it.path(parserResult.urlPath)
+                                                it.build()
+                                            }
                                     } catch (e: URLParserException) {
                                         null
                                     }
