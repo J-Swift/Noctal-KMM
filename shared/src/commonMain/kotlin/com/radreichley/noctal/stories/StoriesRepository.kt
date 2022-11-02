@@ -15,6 +15,7 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.sync.Semaphore
 import kotlinx.datetime.Instant
 
 interface IStoriesRepository {
@@ -24,16 +25,11 @@ interface IStoriesRepository {
 
 class StoriesRepositoryMock : IStoriesRepository {
     override fun getStories(refresh: Boolean): Flow<List<Story>> {
-        val res = HNApiMock.stories.map { dto ->
-            dto.asDao().asExternal()
-        }
-
-        return flowOf(res)
+        return flowOf(previewStories)
     }
 
     override fun getMetas(): Flow<List<StoryMeta>> {
-        // TODO(jpr): implement
-        return flowOf(listOf())
+        return flowOf(previewStoryMetas)
     }
 }
 
@@ -41,11 +37,10 @@ class StoriesRepository(
     private val db: Database,
     private val api: IHNApi,
     private val metaFetcher: IMetaFetcher,
-//    private val dispatcher: CoroutineDispatcher = Dispatchers.Default,
-    // TODO(jpr): DI for ios
-//    private val externalScope: CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 ) : IStoriesRepository {
-    private val externalScope: CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
+    // TODO(jpr): DI for ios
+    private val externalScope: CoroutineScope =
+        CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
     override fun getStories(refresh: Boolean): Flow<List<Story>> {
         val allStories = db.realm.query(StoryDao::class).find()
@@ -76,43 +71,34 @@ class StoriesRepository(
                         copyToRealm(dao)
                     }
                 }
-                println("JIMMY finished writing stories")
             }
 
+            val semaphore = Semaphore(3)
+
             val metas = async {
-                dtos.forEach { dto ->
-                    val item = db.realm.query(StoryMetaDao::class, "it == '$dto.id'").first().find()
-                    if (item == null || (item.favIconPath == null && item.imagePath == null)) {
-                        val meta = metaFetcher.getMetaAsync(dto.asDao().url)
-                        db.realm.write {
-                            val dao = meta.asDao(dto.id)
-                            copyToRealm(dao)
+                val jobs = dtos.map { dto ->
+                    async {
+                        semaphore.acquire()
+                        try {
+                            val item =
+                                db.realm.query(StoryMetaDao::class, "id == '${dto.id}'").first()
+                                    .find()
+                            if (item == null || (item.favIconPath == null && item.imagePath == null)) {
+                                val meta = metaFetcher.getMetaAsync(dto.asDao().url)
+                                db.realm.writeBlocking {
+                                    val dao = meta.asDao(dto.id)
+                                    copyToRealm(dao)
+                                }
+                            }
+                        } finally {
+                            semaphore.release()
                         }
-                        println("JIMMY wrote meta [${dto.id}]")
                     }
                 }
-                println("JIMMY finished writing metas")
+                jobs.awaitAll()
             }
 
             awaitAll(stories, metas)
-        }
-    }
-
-    private fun updateItem(dao: StoryDao, dto: StoryDto) {
-        val urlPath = when {
-            dto.urlPath is String -> dto.urlPath
-            dto.typeOfStory == StoryType.Story -> "https://news.ycombinator.com"
-            else -> "<unknown>"
-        }
-
-        dao.apply {
-            url = urlPath
-            title = dto.title
-            submitter = dto.author
-            createdAt = dto.createdAt
-            score = dto.score
-            numComments = dto.numComments
-            storyText = dto.storyText
         }
     }
 }
@@ -236,7 +222,7 @@ private fun StoryMetaDao.asExternal(): StoryMeta {
     )
 }
 
-val previewStories = HNApiMock.Companion.stories.map { dto ->
+val previewStories = HNApiMock.stories.map { dto ->
     dto.asDao().asExternal()
 }
 
